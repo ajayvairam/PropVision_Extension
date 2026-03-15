@@ -1,0 +1,21 @@
+# Python / FastAPI
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+# YOLO / Ultralytics
+runs/
+yolo11n.pt
+*.pt
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log

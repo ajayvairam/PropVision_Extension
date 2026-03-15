@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PropVision AI Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-brand">
+        <div class="header-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1 class="header-title">PropVision AI</h1>
+          <p class="header-subtitle">Real Estate Image Analyzer</p>
+        </div>
+      </div>
+      <div class="header-status" id="connectionStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Ready</span>
+      </div>
+    </header>
+
+    <!-- Actions -->
+    <section class="action-bar">
+      <button class="btn btn-scan" id="btnScan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>Scan Page</span>
+      </button>
+      <button class="btn btn-analyze" id="btnAnalyze" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Analyze Images</span>
+      </button>
+    </section>
+
+    <!-- Progress Bar -->
+    <div class="progress-container" id="progressContainer" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-text" id="progressText">Analyzing...</span>
+    </div>
+
+    <!-- Summary Cards -->
+    <section class="summary-section" id="summarySection" style="display: none;">
+      <h2 class="section-title">Results Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="card-icon card-icon-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <div class="card-value" id="totalImages">0</div>
+          <div class="card-label">Total Images</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-icon card-icon-purple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </div>
+          <div class="card-value" id="bedroomCount">0</div>
+          <div class="card-label">Bedrooms</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-icon card-icon-green">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+              <line x1="6" y1="1" x2="6" y2="4"></line>
+              <line x1="10" y1="1" x2="10" y2="4"></line>
+              <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+          </div>
+          <div class="card-value" id="kitchenCount">0</div>
+          <div class="card-label">Kitchens</div>
+        </div>
+        <div class="summary-card summary-card-danger">
+          <div class="card-icon card-icon-red">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div class="card-value" id="suspiciousCount">0</div>
+          <div class="card-label">Suspicious</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Results -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+      <h2 class="section-title">Detailed Analysis</h2>
+      <div class="results-list" id="resultsList">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <section class="empty-state" id="emptyState">
+      <div class="empty-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <p class="empty-title">No images scanned yet</p>
+      <p class="empty-desc">Navigate to an OLX property listing and click <strong>Scan Page</strong> to discover images.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span>PropVision AI v1.0</span>
+      <span class="footer-dot">•</span>
+      <span id="imageCountFooter">0 images</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
